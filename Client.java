@@ -66,7 +66,6 @@ public class Client
 			{ 
 				System.out.println(i); 
             } 
-            
 		} 
 		
 		System.out.println("Data sent successfully, waiting for results.....");
@@ -137,6 +136,6 @@ public class Client
 		data[27] =k;
 
 		//initiating the connection
-		Client client = new Client("127.0.0.1", 6789, data); 
+		Client client = new Client("127.0.0.1", 6969, data); 
 	} 
 } 

@@ -309,6 +309,6 @@ public class Server
 	public static void main(String args[]) 
 	{ 
 		//connecting the server to port 6789
-		Server server = new Server(6789);	
+		Server server = new Server(6969);	
 	}   
 } 
