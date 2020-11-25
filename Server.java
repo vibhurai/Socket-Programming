@@ -5,9 +5,14 @@ import java.awt.geom.AffineTransform;
 import java.util.*;
 import java.awt.*;
 import javax.swing.*;
+import java.awt.image.BufferedImage;
+import javax.imageio.ImageIO;
+import java.nio.ByteBuffer;
 
 
- class check extends JFrame {
+
+//the class for drawing the graph 
+class check extends JFrame {
     int width;
     int height;
 
@@ -70,23 +75,22 @@ import javax.swing.*;
         int len = (int) Math.sqrt(dx*dx + dy*dy);
         int aX = (int) x2 + x1 / len * height;
         int aY = (int) y2 + y1 / len * height;
-
-        AffineTransform at = AffineTransform.getTranslateInstance(x1, y1);
+		AffineTransform at = AffineTransform.getTranslateInstance(x1, y1);
         at.concatenate(AffineTransform.getRotateInstance(angle));
         g.transform(at);
-
+        g.setColor(Color.GREEN);
         // Draw horizontal arrow starting in (0, 0)
         g.drawLine(0, 0, len, 0);
+        g.setColor(Color.YELLOW);
         g.fillPolygon(new int[] {len-15, len-20,len-20}, new int[] {0, -ARR_SIZE, ARR_SIZE}, 3);
     }
-    // {len, len-ARR_SIZE, len-ARR_SIZE, len},
-    // new int[] {0, -ARR_SIZE, ARR_SIZE, 0}, 4);
     public void paint(Graphics g) {
         // draw the nodes and edges
 
         FontMetrics f = g.getFontMetrics();
         int nodeHeight = Math.max(height, f.getHeight());
-        g.setColor(Color.black);
+        g.setColor(Color.DARK_GRAY);
+        // g.setBackground(Color.white);
         for (check.edge e : edges) {
 //            gr.drawLine(nodes.get(e.source).x, nodes.get(e.source).y,
 //                    nodes.get(e.destination).x, nodes.get(e.destination).y);
@@ -97,10 +101,10 @@ import javax.swing.*;
 
         for (Node n : nodes) {
             int nodeWidth = Math.max(width, f.stringWidth(n.name)+width/2);
-            g.setColor(Color.white);
+            g.setColor(Color.DARK_GRAY);
             g.fillOval(n.x-nodeWidth/2, n.y-nodeHeight/2,
                     nodeWidth, nodeHeight);
-            g.setColor(Color.black);
+            g.setColor(Color.white);
             g.drawOval(n.x-nodeWidth/2, n.y-nodeHeight/2,
                     nodeWidth, nodeHeight);
 
@@ -168,10 +172,9 @@ public class Server
 					}
 				}
 				
-			}
+			}	
 			
-			
-			
+			System.out.println("The data has been received.\n");
 			count=-1;
 
 			//creating the adjacency matrix
@@ -179,26 +182,16 @@ public class Server
             for(int i=0;i<5;i++)
                 for(int j=0;j<5;j++)
 					adj_mat[i][j]=arr[++count];
-								
-			// System.out.println("\nFollowing is the adjacency matrix: \n");
-			// for(int i=0;i<3;i++)
-            // {
-            //     System.out.println("\n");
-            //     for(int j=0;j<3;j++)
-            //         System.out.print(adj_mat[i][j]+"-");        
-			// }
-			// System.out.print("\nSource: "+ arr[++count]);
-			// System.out.print("\nDestination: "+ arr[++count]);
-			// System.out.print("\nLength: "+ arr[++count]);
-			
+											
 			int [][]res = new int[N][N]; 
 			int  source, dest, len;			
 			source=arr[++count];
 			dest=arr[++count];
 			len=arr[++count]; 
 
+			System.out.println("Getting results...\n");
+			//check for path
 			power(adj_mat, res, len); 
-
 			out = new DataOutputStream(socket.getOutputStream());
 			if(res[source][dest]!=0)
 			{
@@ -222,19 +215,25 @@ public class Server
 					System.out.println(i); 
 				}
 			}
-			check frame = new check("The Graph");
+
+			//making the graph
+			check frame = new check("");
 			frame.setSize(400,600);
-			frame.setVisible(true);
-			frame.addNode("0", 50,170);
-			frame.addNode("1", 210,100);
-			frame.addNode("2", 350,170);
-			frame.addNode("3", 100,300);
-			frame.addNode("4", 300,300);
+			
+			frame.addNode("A", 50,170);
+			frame.addNode("B", 210,100);
+			frame.addNode("C", 350,170);
+			frame.addNode("D", 100,300);
+			frame.addNode("E", 300,300);
+
 			for(int i=0;i<5;i++)
             for(int j=0;j<5;j++)
                 if(adj_mat[i][j]==1)
-                    frame.addEdge(i,j);
+					frame.addEdge(i,j);
+			clickImage(frame, out);
 			//close the socket connection
+			System.out.println("Sending the results to the client....\n");
+			System.out.println("Results sent successfully!\n");
             System.out.println("Closing connection"); 
 			socket.close(); 
 			in.close();
@@ -244,7 +243,21 @@ public class Server
 			System.out.println(i); 
 		} 
 	}
+	private void clickImage(JFrame yourComponent, OutputStream outputStream) {
+        try {
+            BufferedImage img = new BufferedImage(550, 550, BufferedImage.TYPE_INT_RGB);
+            yourComponent.paint(img.getGraphics());
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            ImageIO.write(img, "png", byteArrayOutputStream);
+            byte[] size = ByteBuffer.allocate(4).putInt(byteArrayOutputStream.size()).array();
+            outputStream.write(size);
+            outputStream.write(byteArrayOutputStream.toByteArray());
+            outputStream.flush();
 
+        } catch (IOException e) {
+            System.out.println(e);
+        }}
+	
 	// Function to multiply two matrices 
 	static void multiply(int a[][], int b[][], int res[][]) 
 	{ 
