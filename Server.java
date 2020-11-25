@@ -1,4 +1,4 @@
-// A Java program for a Server 
+// Server side script 
 import java.net.*; 
 import java.io.*; 
 import java.awt.geom.AffineTransform;
@@ -12,14 +12,15 @@ import java.nio.ByteBuffer;
 
 
 //the class for drawing the graph 
-class check extends JFrame {
+class Sketch extends JFrame {
     int width;
     int height;
 
-    ArrayList<Node> nodes;
-    ArrayList<edge> edges;
+    ArrayList<Node> nodes; //arraylist of all the nodes 
+    ArrayList<edge> edges; //arraylist of all the edges
 
-    public check() { //Constructor
+	//Constructor
+	public Sketch() { 
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         nodes = new ArrayList<Node>();
         edges = new ArrayList<edge>();
@@ -27,7 +28,8 @@ class check extends JFrame {
         height = 30;
     }
 
-    public check(String name) { //Construct with label
+	//Construct with label
+	public Sketch(String name) { 
         this.setTitle(name);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         nodes = new ArrayList<Node>();
@@ -37,79 +39,79 @@ class check extends JFrame {
     }
 
     class Node {
-        int x, y;
+        int x_coord, y_coord;
         String name;
 
-        public Node(String myName, int myX, int myY) {
-            x = myX;
-            y = myY;
-            name = myName;
+        public Node(String Name, int X, int Y) {
+            x_coord = X;
+            y_coord = Y;
+            name = Name;
         }
     }
 
     class edge {
-        int i,j;
+        int src,des;
 
-        public edge(int ii, int jj) {
-            i = ii;
-            j = jj;
+        public edge(int f1, int f2) {
+            src = f1;
+            des = f2;
         }
     }
 
-    public void addNode(String name, int x, int y) {
+	//function to add nodes
+	public void addNode(String name, int x, int y) {
         //add a node at pixel (x,y)
         nodes.add(new Node(name,x,y));
         this.repaint();
-    }
+	}
+	
+	//function to add edges
     public void addEdge(int i, int j) {
         //add an edge between nodes i and j
         edges.add(new edge(i,j));
         this.repaint();
-    }
-    private final int ARR_SIZE = 5;
+	}
+	
+	
+	private final int array_length = 5;
     void drawArrow(Graphics g1, int x1, int y1, int x2, int y2) {
         Graphics2D g = (Graphics2D) g1.create();
 
         double dx = x2 - x1, dy = y2 - y1;
-        double angle = Math.atan2(dy, dx);
-        int len = (int) Math.sqrt(dx*dx + dy*dy);
-        int aX = (int) x2 + x1 / len * height;
-        int aY = (int) y2 + y1 / len * height;
+        double elevation = Math.atan2(dy, dx);
+		int len = (int) Math.sqrt(dx*dx + dy*dy);
+		
 		AffineTransform at = AffineTransform.getTranslateInstance(x1, y1);
-        at.concatenate(AffineTransform.getRotateInstance(angle));
+        at.concatenate(AffineTransform.getRotateInstance(elevation));
         g.transform(at);
-        g.setColor(Color.GREEN);
-        // Draw horizontal arrow starting in (0, 0)
-        g.drawLine(0, 0, len, 0);
+		g.setColor(Color.GREEN);
+		g.drawLine(0, 0, len, 0);
         g.setColor(Color.YELLOW);
-        g.fillPolygon(new int[] {len-15, len-20,len-20}, new int[] {0, -ARR_SIZE, ARR_SIZE}, 3);
-    }
+        g.fillPolygon(new int[] {len-15, len-20,len-20}, new int[] {0, -array_length, array_length}, 3);
+	}
+	
     public void paint(Graphics g) {
         // draw the nodes and edges
 
         FontMetrics f = g.getFontMetrics();
         int nodeHeight = Math.max(height, f.getHeight());
         g.setColor(Color.DARK_GRAY);
-        // g.setBackground(Color.white);
-        for (check.edge e : edges) {
-//            gr.drawLine(nodes.get(e.source).x, nodes.get(e.source).y,
-//                    nodes.get(e.destination).x, nodes.get(e.destination).y);
-            drawArrow(g,nodes.get(e.i).x,nodes.get(e.i).y,nodes.get(e.j).x, nodes.get(e.j).y);
-
+        for (Sketch.edge e : edges) {
+            drawArrow(g,nodes.get(e.src).x_coord,nodes.get(e.src).y_coord,nodes.get(e.des).x_coord, nodes.get(e.des).y_coord);
         }
 
 
         for (Node n : nodes) {
             int nodeWidth = Math.max(width, f.stringWidth(n.name)+width/2);
             g.setColor(Color.DARK_GRAY);
-            g.fillOval(n.x-nodeWidth/2, n.y-nodeHeight/2,
+            g.fillOval(n.x_coord-nodeWidth/2, n.y_coord-nodeHeight/2,
                     nodeWidth, nodeHeight);
             g.setColor(Color.white);
-            g.drawOval(n.x-nodeWidth/2, n.y-nodeHeight/2,
+            g.drawOval(n.x_coord-nodeWidth/2, n.y_coord-nodeHeight/2,
                     nodeWidth, nodeHeight);
 
-            g.drawString(n.name, n.x-f.stringWidth(n.name)/2,
-                    n.y+f.getHeight()/3);
+            g.drawString(n.name, n.x_coord-f.stringWidth(n.name)/2,
+                    n.y_coord+f.getHeight()/3);
         }
     }
 }
@@ -144,7 +146,7 @@ public class Server
 			//array to store incoming data
 			int [] arr = new int[28];
 			
-			// we accept the 9 elements of the adjacency matrix from the client 
+			// we accept the 25 elements of the adjacency matrix from the client 
 			while (count<=28) 
 			{ 
 				if(count<=25)
@@ -190,7 +192,7 @@ public class Server
 			len=arr[++count]; 
 
 			System.out.println("Getting results...\n");
-			//check for path
+			//Sketch for path
 			power(adj_mat, res, len); 
 			out = new DataOutputStream(socket.getOutputStream());
 			if(res[source][dest]!=0)
@@ -217,7 +219,7 @@ public class Server
 			}
 
 			//making the graph
-			check frame = new check("");
+			Sketch frame = new Sketch("");
 			frame.setSize(400,600);
 			
 			frame.addNode("A", 50,170);
@@ -230,7 +232,7 @@ public class Server
             for(int j=0;j<5;j++)
                 if(adj_mat[i][j]==1)
 					frame.addEdge(i,j);
-			clickImage(frame, out);
+			capture_screenshot(frame, out);
 			//close the socket connection
 			System.out.println("Sending the results to the client....\n");
 			System.out.println("Results sent successfully!\n");
@@ -243,16 +245,18 @@ public class Server
 			System.out.println(i); 
 		} 
 	}
-	private void clickImage(JFrame yourComponent, OutputStream outputStream) {
+
+	//Screencapture of the JFrame
+	private void capture_screenshot(JFrame Component, OutputStream op) {
         try {
             BufferedImage img = new BufferedImage(550, 550, BufferedImage.TYPE_INT_RGB);
-            yourComponent.paint(img.getGraphics());
+            Component.paint(img.getGraphics());
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             ImageIO.write(img, "png", byteArrayOutputStream);
             byte[] size = ByteBuffer.allocate(4).putInt(byteArrayOutputStream.size()).array();
-            outputStream.write(size);
-            outputStream.write(byteArrayOutputStream.toByteArray());
-            outputStream.flush();
+            op.write(size);
+            op.write(byteArrayOutputStream.toByteArray());
+            op.flush();
 
         } catch (IOException e) {
             System.out.println(e);
@@ -304,7 +308,7 @@ public class Server
 	//driver function
 	public static void main(String args[]) 
 	{ 
+		//connecting the server to port 6789
 		Server server = new Server(6789);	
-	}  
-		 
+	}   
 } 

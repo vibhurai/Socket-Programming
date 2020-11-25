@@ -1,4 +1,4 @@
-// A Java program for a Client 
+// Client side script
 import java.net.*;
 import java.io.*; 
 import java.util.Scanner;
@@ -53,6 +53,7 @@ public class Client
             
 		} 
 		
+		//sending the source, destination and the length of the path seperately
 		int fl=25;
 		while (fl<=27) 
 		{ 
@@ -70,23 +71,26 @@ public class Client
 		
 		System.out.println("Data sent successfully, waiting for results.....");
 
+		//reading the inputs from the server
 		try{
 			in = new DataInputStream( 
 				new BufferedInputStream(socket.getInputStream()));
 			System.out.print(in.readUTF());
+			
+			//saving the image
 			byte[] sizeAr = new byte[4];
             in.read(sizeAr);
             int size = ByteBuffer.wrap(sizeAr).asIntBuffer().get();
             byte[] imageAr = new byte[size];
             in.read(imageAr);
             BufferedImage image = ImageIO.read(new ByteArrayInputStream(imageAr));
-            ImageIO.write(image, "png", new File("image" + System.currentTimeMillis() + ".png"));	
+            ImageIO.write(image, "png", new File("Graph_image" + ".png"));	
 		}
 		catch(IOException i) 
 		{ 
 			System.out.println(i); 
 		} 
-		System.out.println("\nYou can check the graph which has been saved in the current working directory.");
+		System.out.println("\nYou can check the graph which has been saved in the current working directory in '.png' format.");
 
 		// close the connection 
 		try
@@ -103,21 +107,21 @@ public class Client
 	//driver function
 	public static void main(String args[]) 
 	{  
-		int [] data = new int [28];//{0,1,0,0,0,0,0,1,1,0,0,0,0,1,1,0,0,0,0,1,0,0,0,0,0,0,3,1};//new int[28];
-		int x=1; 
+		int [] data = new int [28];
+		int itr=-1; 
 		Scanner myObj = new Scanner(System.in);
-		System.out.println("Enter the 25 elements of the adjacency matrix:\n ");
-		
-		// taking in the adjacent matrix elements
-		while (x<=25) 
-		{ 
-		             
-            data[x-1] =myObj.nextInt();              
-            x++;
+
+		//taking in the ajdacency matrix
+		System.out.println("Enter the 5X5 djacency matrix:\n ");
+		for (int i = 0; i < 5; i++) {
+			String line = myObj.nextLine();
+			String[] arr = line.split(" ");
+			for (String fl : arr) {
+				data[++itr]=Integer.parseInt(fl);
+			}
 		}
+
 		String source, dest;
-		//getting source, destination and length from user
-		// int source, dest,k;
 		System.out.println("Enter the source (in upper case): ");
 		source = myObj.next();
 		char s = source.charAt(0);
@@ -125,7 +129,6 @@ public class Client
 		dest = myObj.next();
 		char d = dest.charAt(0);
 		int k;
-		// myObj.nextInt();
 		System.out.println("Enter the length of path: ");
 		k=myObj.nextInt();
 
@@ -133,6 +136,7 @@ public class Client
 		data[26] =(int)d%65;
 		data[27] =k;
 
+		//initiating the connection
 		Client client = new Client("127.0.0.1", 6789, data); 
 	} 
 } 
