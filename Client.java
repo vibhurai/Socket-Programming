@@ -1,8 +1,5 @@
 // A Java program for a Client 
 import java.net.*;
-
-// import jdk.jshell.resources.l10n_ja;
-
 import java.io.*; 
 import java.util.Scanner;
 
@@ -10,7 +7,8 @@ public class Client
 { 
 	// initialize socket and input output streams 
 	private Socket socket		 = null; 
-	private DataOutputStream out	 = null; 
+	private DataOutputStream out	 = null;
+	private DataInputStream in	 = null; 
 	
 
 	// constructor to put ip address and port 
@@ -69,6 +67,15 @@ public class Client
 		
 		System.out.println("Data sent successfully!");
 
+		try{
+			in = new DataInputStream( 
+				new BufferedInputStream(socket.getInputStream()));
+			System.out.print(in.readUTF());	
+		}
+		catch(IOException i) 
+		{ 
+			System.out.println(i); 
+		} 
 		// close the connection 
 		try
 		{ 
@@ -81,12 +88,15 @@ public class Client
 		} 
 	} 
 
+	//driver function
 	public static void main(String args[]) 
 	{  
 		int [] data = new int[12];
 		int x=1; 
 		Scanner myObj = new Scanner(System.in);
 		System.out.println("Enter the 9 elements of the adjacency matrix:\n ");
+		
+		//taking in the adjacent matrix elements
 		while (x<=9) 
 		{ 
 		             
@@ -94,6 +104,7 @@ public class Client
             x++;
 		}
 		
+		//getting source, destination and length from user
 		int source, dest,k;
 		System.out.println("Enter the source and destination vertices: ");
 		source=myObj.nextInt();
@@ -104,6 +115,7 @@ public class Client
 		data[9] =source;
 		data[10] =dest;
 		data[11] =k;
-		Client client = new Client("127.0.0.1", 5000, data); 
+
+		Client client = new Client("127.0.0.1", 6789, data); 
 	} 
 } 

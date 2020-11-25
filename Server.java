@@ -7,8 +7,10 @@ public class Server
 	//initialize socket and input stream 
 	private Socket		 socket = null; 
 	private ServerSocket server = null; 
-	private DataInputStream in	 = null; 
+	private DataInputStream in	 = null;
+	private DataOutputStream out	 = null; 
 	static int N = 3;
+	
 	// constructor with port 
 	public Server(int port) 
 	{ 
@@ -89,12 +91,29 @@ public class Server
 
 			power(adj_mat, res, len); 
 
-
+			out = new DataOutputStream(socket.getOutputStream());
 			if(res[source][dest]!=0)
-				System.out.print("\nThe path exists!\n");
+			{
+				try
+				{  
+					out.writeUTF("\nThe path exists!");    
+				}
+				catch(IOException i) 
+				{ 
+					System.out.println(i); 
+				}
+			}
 			else
-				System.out.print("\nThe path does not exist!\n");
-
+			{
+				try
+				{  
+					out.writeUTF("\nThe path does not exist!");    
+				}
+				catch(IOException i) 
+				{ 
+					System.out.println(i); 
+				}
+			}
 			
 			//close the socket connection
             System.out.println("Closing connection"); 
@@ -149,27 +168,11 @@ public class Server
 		if (n % 2 != 0) 
 			multiply(res, G, res); 
 	} 
+
+	//driver function
 	public static void main(String args[]) 
 	{ 
-		Server server = new Server(5000);
-		// int [][]res = new int[N][N]; 
-		// int  source, dest;
-		// System.out.println("Enter the source and destination vertices: ");
-		// source=myObj.nextInt();
-		// dest=myObj.nextInt();
-
-		// System.out.println("Enter the length of path: ");
-		// k=myObj.nextInt();
-
-
-		// power(data, res, k); 
-
-
-		// if(res[source][dest]!=0)
-		// 	System.out.print("\nThe path exists!");
-		// else
-		// 	System.out.print("\nThe path does not exist!");
-			
-		}  
+		Server server = new Server(6789);	
+	}  
 		 
 } 
