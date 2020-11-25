@@ -36,7 +36,7 @@ public class Client
 		System.out.println("Sending data to server!");
 		
 		// we send the 9 elements of the adjacency matrix to the server
-		while (count<=9) 
+		while (count<=25) 
 		{ 
 			try
 			{  
@@ -50,8 +50,8 @@ public class Client
             
 		} 
 		
-		int fl=9;
-		while (fl<=11) 
+		int fl=25;
+		while (fl<=27) 
 		{ 
 			try
 			{  
@@ -91,13 +91,13 @@ public class Client
 	//driver function
 	public static void main(String args[]) 
 	{  
-		int [] data = new int[12];
+		int [] data = new int[28];
 		int x=1; 
 		Scanner myObj = new Scanner(System.in);
 		System.out.println("Enter the 9 elements of the adjacency matrix:\n ");
 		
 		//taking in the adjacent matrix elements
-		while (x<=9) 
+		while (x<=25) 
 		{ 
 		             
             data[x-1] =myObj.nextInt();              
@@ -112,9 +112,9 @@ public class Client
 		System.out.println("Enter the length of path: ");
 		k=myObj.nextInt();
 
-		data[9] =source;
-		data[10] =dest;
-		data[11] =k;
+		data[25] =source;
+		data[26] =dest;
+		data[27] =k;
 
 		Client client = new Client("127.0.0.1", 6789, data); 
 	} 
