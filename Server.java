@@ -135,9 +135,16 @@ public class Server
 	// constructor with port 
 	public Server(int port) 
 	{ 
+		
 		// starts server and waits for a connection 
 		try
 		{ 
+			boolean []visited = new boolean[5];
+			boolean value;
+			for(int i = 0;i<5;i++)
+			{
+				visited[i] = false;
+			}
 			server = new ServerSocket(port); 
 			System.out.println("\n=============================================================="); 
 			System.out.println("\nServer started");
@@ -200,11 +207,11 @@ public class Server
 			len=arr[++count]; 
 
 			System.out.println("Getting results.....");
-			//Sketch for path
-			// check_paths(graph, u, v, k)
-			// power(adj_mat, res, len); 
+		
 			out = new DataOutputStream(socket.getOutputStream());
-			if(check_paths(adj_mat, source, dest, len)!=0)
+			
+
+			if(check_existance(adj_mat,source,dest,visited,len))
 			{
 				try
 				{  
@@ -258,27 +265,22 @@ public class Server
 	}
 
 	//check for the path of length k between the source and destination
-	int check_paths(int graph[][], int src, int dest, int len)
-	{
-		// Base cases
-		if (len == 0 && src == dest)
-			return 1;
-		if (len == 1 && graph[src][dest] == 1)
-			return 1;
-		if (len <= 0)
-			return 0;
-
-		// Initialize result
-		int count = 0;
-
-		// Go to all adjacents of source and recur
-		for (int i = 0; i < N; i++)
-			if (graph[src][i] == 1) // Check if is adjacent of source
-				count += check_paths(graph, i, src, len - 1);
-
-		return count;
+	public static boolean check_existance(int adj[][],int s,int d,boolean vis[],int n)
+    {  vis[s]=true;
+        if(adj[s][d]!=0 && n==adj[s][d])
+            return true;
+        for(int i=0;i<adj.length;i++)
+        {
+            if(adj[s][i]!=0 && !vis[i])
+            {
+                if(check_existance(adj,i,d,vis,n-adj[s][i]))
+                    return true;
+            }
+        }
+        vis[s]=false;
+        return false;
 	}
-
+	
 	//Screencapture of the JFrame
 	private void capture_screenshot(JFrame Component, OutputStream op) {
         try {
