@@ -1,4 +1,12 @@
+/*
+
+	Name : Kaustubh Rai
+	Roll number : 1810110102
+
+*/
+
 // Client side script
+
 import java.net.*;
 import java.io.*; 
 import java.util.Scanner;
@@ -114,7 +122,7 @@ public class Client
 		Scanner myObj = new Scanner(System.in);
 
 		//taking in the ajdacency matrix
-		System.out.println("Enter the 5X5 djacency matrix:\n ");
+		System.out.println("\nEnter the 5X5 djacency matrix: ");
 		for (int i = 0; i < 5; i++) {
 			String line = myObj.nextLine();
 			String[] arr = line.split(" ");
@@ -124,7 +132,7 @@ public class Client
 		}
 
 		String source, dest;
-		System.out.println("Enter the source (in upper case): ");
+		System.out.println("\nEnter the source (in upper case): ");
 		source = myObj.next();
 		char s = source.charAt(0);
 		System.out.println("Enter the destination (in upper case): ");
