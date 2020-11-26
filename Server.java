@@ -92,9 +92,19 @@ class Sketch extends JFrame {
         at.concatenate(AffineTransform.getRotateInstance(elevation));
         g.transform(at);
 		g.setColor(Color.GREEN);
-		g.drawLine(0, 0, len, 0);
+		if( x1==x2 && y1==y2)
+		{
+			g.drawLine(0, 0, -40, 0);
+			g.drawLine(-40, 0, -40, 9);
+			g.drawLine(-40, 9, 0, 9);
+			g.setColor(Color.MAGENTA);
+			g.fillPolygon(new int[] {len-15, len-25,len-25}, new int[] {10,15, 5}, 3);
+		}
+
+		else{
+			g.drawLine(0, 0, len, 0);
         g.setColor(Color.YELLOW);
-        g.fillPolygon(new int[] {len-15, len-20,len-20}, new int[] {0, -array_length, array_length}, 3);
+        g.fillPolygon(new int[] {len-15, len-20,len-20}, new int[] {0, -array_length, array_length}, 3);}
 	}
 	
     public void paint(Graphics g) {
