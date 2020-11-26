@@ -194,10 +194,10 @@ public class Server
 
 			System.out.println("Getting results.....");
 			//Sketch for path
-			// countwalks(graph, u, v, k)
+			// check_paths(graph, u, v, k)
 			// power(adj_mat, res, len); 
 			out = new DataOutputStream(socket.getOutputStream());
-			if(countwalks(adj_mat, source, dest, len)==1)
+			if(check_paths(adj_mat, source, dest, len)!=0)
 			{
 				try
 				{  
@@ -250,23 +250,24 @@ public class Server
 		System.out.println("\n==============================================================");
 	}
 
-	int countwalks(int graph[][], int u, int v, int k)
+	//check for the path of length k between the source and destination
+	int check_paths(int graph[][], int src, int dest, int len)
 	{
 		// Base cases
-		if (k == 0 && u == v)
+		if (len == 0 && src == dest)
 			return 1;
-		if (k == 1 && graph[u][v] == 1)
+		if (len == 1 && graph[src][dest] == 1)
 			return 1;
-		if (k <= 0)
+		if (len <= 0)
 			return 0;
 
 		// Initialize result
 		int count = 0;
 
-		// Go to all adjacents of u and recur
+		// Go to all adjacents of source and recur
 		for (int i = 0; i < N; i++)
-			if (graph[u][i] == 1) // Check if is adjacent of u
-				count += countwalks(graph, i, v, k - 1);
+			if (graph[src][i] == 1) // Check if is adjacent of source
+				count += check_paths(graph, i, src, len - 1);
 
 		return count;
 	}
