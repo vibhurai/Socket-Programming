@@ -111,7 +111,7 @@ public class Client
 		{ 
 			System.out.println(i); 
 		} 
-		System.out.println("\n----------------x-----CONNECTION TERMINATED-----x----------------");
+		System.out.println("\n----------------x-----CONNECTION TERMINATED-----x---------------- ");
 	} 
 
 	//driver function
@@ -122,7 +122,7 @@ public class Client
 		Scanner myObj = new Scanner(System.in);
 
 		//taking in the ajdacency matrix
-		System.out.println("\nEnter the 5X5 djacency matrix: ");
+		System.out.println("\nEnter the 5X5 adjacency matrix: ");
 		for (int i = 0; i < 5; i++) {
 			String line = myObj.nextLine();
 			String[] arr = line.split(" ");
