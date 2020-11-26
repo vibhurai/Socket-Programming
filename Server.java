@@ -132,7 +132,8 @@ public class Server
 		try
 		{ 
 			server = new ServerSocket(port); 
-			System.out.println("Server started");
+			System.out.println("\n=============================================================="); 
+			System.out.println("\nServer started");
 			System.out.println("Waiting for a client to connect..."); 
 			socket = server.accept(); 
 			System.out.println("Connection established successfully!!"); 
@@ -176,7 +177,7 @@ public class Server
 				
 			}	
 			
-			System.out.println("The data has been received.\n");
+			System.out.println("The data has been received.");
 			count=-1;
 
 			//creating the adjacency matrix
@@ -185,17 +186,18 @@ public class Server
                 for(int j=0;j<5;j++)
 					adj_mat[i][j]=arr[++count];
 											
-			int [][]res = new int[N][N]; 
+			// int [][]res = new int[N][N]; 
 			int  source, dest, len;			
 			source=arr[++count];
 			dest=arr[++count];
 			len=arr[++count]; 
 
-			System.out.println("Getting results...\n");
+			System.out.println("Getting results.....");
 			//Sketch for path
-			power(adj_mat, res, len); 
+			// countwalks(graph, u, v, k)
+			// power(adj_mat, res, len); 
 			out = new DataOutputStream(socket.getOutputStream());
-			if(res[source][dest]!=0)
+			if(countwalks(adj_mat, source, dest, len)==1)
 			{
 				try
 				{  
@@ -234,8 +236,8 @@ public class Server
 					frame.addEdge(i,j);
 			capture_screenshot(frame, out);
 			//close the socket connection
-			System.out.println("Sending the results to the client....\n");
-			System.out.println("Results sent successfully!\n");
+			System.out.println("Sending the results to the client....");
+			System.out.println("Results sent successfully!");
             System.out.println("Closing connection"); 
 			socket.close(); 
 			in.close();
@@ -244,12 +246,35 @@ public class Server
 		{ 
 			System.out.println(i); 
 		} 
+		System.out.println("\nConnection terminated.");
+		System.out.println("\n==============================================================");
+	}
+
+	int countwalks(int graph[][], int u, int v, int k)
+	{
+		// Base cases
+		if (k == 0 && u == v)
+			return 1;
+		if (k == 1 && graph[u][v] == 1)
+			return 1;
+		if (k <= 0)
+			return 0;
+
+		// Initialize result
+		int count = 0;
+
+		// Go to all adjacents of u and recur
+		for (int i = 0; i < N; i++)
+			if (graph[u][i] == 1) // Check if is adjacent of u
+				count += countwalks(graph, i, v, k - 1);
+
+		return count;
 	}
 
 	//Screencapture of the JFrame
 	private void capture_screenshot(JFrame Component, OutputStream op) {
         try {
-            BufferedImage img = new BufferedImage(550, 550, BufferedImage.TYPE_INT_RGB);
+            BufferedImage img = new BufferedImage(600, 600, BufferedImage.TYPE_INT_RGB);
             Component.paint(img.getGraphics());
             ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
             ImageIO.write(img, "png", byteArrayOutputStream);
@@ -262,49 +287,7 @@ public class Server
             System.out.println(e);
         }}
 	
-	// Function to multiply two matrices 
-	static void multiply(int a[][], int b[][], int res[][]) 
-	{ 
-		int [][]mul = new int[N][N]; 
-		for (int i = 0; i < N; i++) 
-		{ 
-			for (int j = 0; j < N; j++) 
-			{ 
-				mul[i][j] = 0; 
-				for (int k = 0; k < N; k++) 
-					mul[i][j] += a[i][k] * b[k][j]; 
-			} 
-		} 
-
-		// Storing the multiplication result in res[][] 
-		for (int i = 0; i < N; i++) 
-			for (int j = 0; j < N; j++) 
-				res[i][j] = mul[i][j]; 
-	}  
-
-	// Function to compute G raised to the power n 
-	static void power(int G[][], int res[][], int n) 
-	{ 
-
-		// Base condition 
-		if (n == 1) { 
-			for (int i = 0; i < N; i++) 
-				for (int j = 0; j < N; j++) 
-					res[i][j] = G[i][j]; 
-			return; 
-		} 
-
-		// Recursion call for first half 
-		power(G, res, n / 2); 
-
-		// Multiply two halves 
-		multiply(G, G, res); 
-
-		// If n is odd 
-		if (n % 2 != 0) 
-			multiply(res, G, res); 
-	} 
-
+	
 	//driver function
 	public static void main(String args[]) 
 	{ 

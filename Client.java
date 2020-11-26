@@ -21,6 +21,7 @@ public class Client
 		try
 		{ 
 			socket = new Socket(address, port); 
+			System.out.println("\n----------------x-----CONNECTION DETAILS-----x----------------"); 
 			System.out.println("Successfully connected to server!"); 
 			
 			// sends output to the socket 
@@ -36,7 +37,7 @@ public class Client
 		}
 		
 		int count=1;
-		System.out.println("Sending data to server!");
+		System.out.println("Sending data to server.....");
 		
 		// we send the 25 elements of the adjacency matrix to the server
 		while (count<=25) 
@@ -89,8 +90,9 @@ public class Client
 		{ 
 			System.out.println(i); 
 		} 
-		System.out.println("\nYou can check the graph which has been saved in the current working directory in '.png' format.");
+		System.out.println("\nYou can check the graph which has been saved in the current working directory by the name of 'Graph_image' in '.png' format.");
 
+		System.out.println("Closing connection.....");
 		// close the connection 
 		try
 		{ 
@@ -101,6 +103,7 @@ public class Client
 		{ 
 			System.out.println(i); 
 		} 
+		System.out.println("\n----------------x-----CONNECTION TERMINATED-----x----------------");
 	} 
 
 	//driver function
