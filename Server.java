@@ -131,6 +131,7 @@ public class Server
 	private DataInputStream in	 = null;
 	private DataOutputStream out	 = null; 
 	static int N = 5;
+	boolean []visited;
 	
 	// constructor with port 
 	public Server(int port) 
@@ -139,7 +140,7 @@ public class Server
 		// starts server and waits for a connection 
 		try
 		{ 
-			boolean []visited = new boolean[5];
+			visited = new boolean[5];
 			boolean value;
 			for(int i = 0;i<5;i++)
 			{
@@ -266,12 +267,22 @@ public class Server
 
 	//check for the path of length k between the source and destination
 	public static boolean check_existance(int adj[][],int s,int d,boolean vis[],int n)
-    {  vis[s]=true;
-        if(adj[s][d]!=0 && n==adj[s][d])
-            return true;
+	{  vis[s]=true;
+		
+		System.out.println();
+		for(int i=0;i<adj.length;i++)
+			System.out.print(vis[i]+" ");
+		if(adj[s][d]!=0 && n==1)
+		{
+			
+			return true;
+		}	
         for(int i=0;i<adj.length;i++)
         {
-            if(adj[s][i]!=0 && !vis[i])
+			if(i==d && n!=1)
+				continue;
+				
+			if(adj[s][i]!=0 && !vis[i])
             {
                 if(check_existance(adj,i,d,vis,n-adj[s][i]))
                     return true;
