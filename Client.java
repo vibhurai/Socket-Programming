@@ -12,10 +12,17 @@ import java.io.*;
 import java.util.Scanner;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
 import java.nio.ByteBuffer;
-
-public class Client 
+import java.awt.Image;
+import java.awt.*;
+import java.awt.image.*;
+import java.io.*;
+import javax.imageio.*;
+import javax.swing.*;
+public class Client extends JFrame
 { 
+	
 	// initialize socket and input output streams 
 	private Socket socket		 = null; 
 	private DataOutputStream out	 = null;
@@ -25,6 +32,7 @@ public class Client
 	// constructor to put ip address and port 
 	public Client(String address, int port, int [] data) 
 	{ 
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		// establish a connection 
 		try
 		{ 
@@ -92,7 +100,29 @@ public class Client
             byte[] imageAr = new byte[size];
             in.read(imageAr);
             BufferedImage image = ImageIO.read(new ByteArrayInputStream(imageAr));
-            ImageIO.write(image, "png", new File("Graph_image" + ".png"));	
+			ImageIO.write(image, "png", new File("Graph_image" + ".png"));	
+			// ImageIO.write(image, "png", new File("Graph_image" + ".png"));
+			try
+			{
+				Image picture = ImageIO.read(new File("Graph_image.png"));
+				ImageIcon imageIcon = new ImageIcon(image);
+				JFrame editorFrame = new JFrame("Graph_Image");
+				editorFrame.setSize(200,600);
+        		JLabel jLabel = new JLabel();
+				jLabel.setIcon(imageIcon);
+				editorFrame.getContentPane().add(jLabel, BorderLayout.CENTER);
+				editorFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+				editorFrame.pack();
+				editorFrame.setLocationRelativeTo(null);
+				editorFrame.setVisible(true);
+				// picture.
+			}
+			catch (IOException e)
+			{
+				String workingDir = System.getProperty("user.dir");
+				System.out.println("Current working directory : " + workingDir);
+				e.printStackTrace();
+			}
 		}
 		catch(IOException i) 
 		{ 
@@ -112,6 +142,7 @@ public class Client
 			System.out.println(i); 
 		} 
 		System.out.println("\n----------------x-----CONNECTION TERMINATED-----x---------------- ");
+		
 	} 
 
 	//driver function

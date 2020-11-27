@@ -279,9 +279,6 @@ public class Server
 	public static boolean check_existance(int adj[][],int s,int d,boolean vis[],int n)
 	{  vis[s]=true;
 		
-		System.out.println();
-		for(int i=0;i<adj.length;i++)
-			System.out.print(vis[i]+" ");
 		if(adj[s][d]!=0 && n==1)
 		{
 			
